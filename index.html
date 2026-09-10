@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maria Jaume Studio</title>
+    <style>
+        /* Variables y Reseteo básico */
+        :root {
+            --bg-color: #fafafa;
+            --text-color: #262626;
+            --border-color: #dbdbdb;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        /* Encabezado / Perfil */
+        header {
+            max-width: 935px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+        }
+        .profile-info h1 {
+            font-weight: 300;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+        .bio {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        .bio strong { font-weight: 600; }
+        .contact-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 8px 16px;
+            background-color: var(--text-color);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Cuadrícula (Grid) estilo Instagram */
+        main {
+            max-width: 935px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .grid-header {
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #8e8e8e;
+        }
+        .ig-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+        .ig-post {
+            position: relative;
+            width: 100%;
+            padding-bottom: 100%; /* Mantiene las fotos cuadradas perfectas */
+            background-color: #efefef;
+            overflow: hidden;
+            border-radius: 4px;
+        }
+        .ig-post img {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .ig-post:hover img {
+            transform: scale(1.03); /* Pequeño efecto zoom al pasar el ratón */
+        }
+
+        /* Adaptación para móviles */
+        @media (max-width: 768px) {
+            header { flex-direction: column; text-align: center; gap: 20px; }
+            .profile-pic { width: 100px; height: 100px; }
+            .ig-grid { gap: 5px; } /* Menos margen en móviles, igual que IG */
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <!-- Cambia esta URL por la URL de la foto de perfil real -->
+        <img src="https://images.unsplash.com/photo-1551009175-8a68da93d5f9?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Maria Jaume Studio" class="profile-pic">
+        <div class="profile-info">
+            <h1>mariajaume.studio</h1>
+            <div class="bio">
+                <strong>Maria Jaume Studio</strong><br>
+                Dirección de Arte, Diseño & Creatividad ??<br>
+                ?? Barcelona / Mallorca<br>
+                <a href="mailto:tuemail@tudominio.com" class="contact-btn">Contáctame</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="grid-header">Galería / Portfolio</div>
+        <!-- Aquí inyectaremos los posts reales más adelante -->
+        <div class="ig-grid" id="instagram-feed">
+            <!-- El JavaScript inferior dibuja las fotos aquí -->
+        </div>
+    </main>
+
+    <script>
+        /* 
+           VERSIÓN ESTÁTICA
+           He preparado el código de esta forma porque cuando conectemos la API de Instagram, 
+           lo único que haremos será borrar este "array" de imágenes falsas y sustituirlo 
+           por los datos que nos devuelva Meta. El resto de la web ya funcionará solo.
+        */
+        const staticPosts = [
+            { id: 1, image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", alt: "Proyecto 1" },
+            { id: 2, image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", alt: "Proyecto 2" },
+            { id: 3, image: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", alt: "Proyecto 3" },
+            { id: 4, image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", alt: "Proyecto 4" },
+            { id: 5, image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", alt: "Proyecto 5" },
+            { id: 6, image: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", alt: "Proyecto 6" },
+            { id: 7, image: "https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", alt: "Proyecto 7" },
+            { id: 8, image: "https://images.unsplash.com/photo-1517089152318-42ec560349c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", alt: "Proyecto 8" },
+            { id: 9, image: "https://images.unsplash.com/photo-1528901166007-3784c7dd3653?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", alt: "Proyecto 9" }
+        ];
+
+        const feedContainer = document.getElementById('instagram-feed');
+
+        function renderFeed() {
+            staticPosts.forEach(post => {
+                // Creamos el contenedor de la foto
+                const postElement = document.createElement('div');
+                postElement.classList.add('ig-post');
+                
+                // Creamos la imagen
+                const imgElement = document.createElement('img');
+                imgElement.src = post.image;
+                imgElement.alt = post.alt;
+                imgElement.loading = "lazy"; // Esto hace que cargue más rápido en móviles
+
+                // Lo juntamos todo y lo inyectamos al HTML
+                postElement.appendChild(imgElement);
+                feedContainer.appendChild(postElement);
+            });
+        }
+
+        renderFeed();
+    </script>
+</body>
+</html>
